@@ -734,8 +734,8 @@ setMethod("getCorrelation", "methylBase",
                             rect(breaks[-nB], 0, breaks[-1], y, col="cyan", ...)
                         }
                         
-                        
-						)
+                        if(plot)
+                          
                         {  
                          
                           if(method=="spearman")
