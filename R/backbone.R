@@ -734,7 +734,8 @@ setMethod("getCorrelation", "methylBase",
                             rect(breaks[-nB], 0, breaks[-1], y, col="cyan", ...)
                         }
                         
-                        if(plot)
+                        
+						)
                         {  
                          
                           if(method=="spearman")
@@ -938,51 +939,86 @@ setMethod("getMethylationStats", "methylRaw",
                       }else{
                         if(both.strands){   
                           
-                          par(mfrow=c(1,2))
+                          #par(mfrow=c(1,2))
                           if(labels){
-                            a=hist((plus.met),plot=F,...)
-                            my.labs=as.character(round(100*a$counts/length(plus.met),1))
-                          }else{my.labs=FALSE}
-                          hist((plus.met),col="cornflowerblue",
-                               xlab=paste("% methylation per",object@resolution),
-                               main=paste("Histogram of %", object@context,"methylation: Forward strand"),
-                               labels=my.labs,...)
-                          mtext(object@sample.id, side = 3)
+                            #a=hist((plus.met),plot=F,...)
+                            #my.labs=as.character(round(100*a$counts/length(plus.met),1))
+    						fstrand <- ggplot(data.frame(x=plus.met), aes(x)) + 
+    						     geom_histogram(breaks=seq(0, 100, by = 5)) + 
+    						     theme_bw() + labs(x="% methylation per base", y="Frequency") + 
+    							 labs(title=paste(object@sample.id, "- positive strand")) + 
+    							 theme(plot.title = element_text(lineheight=.8, face="bold")) +							
+  							     geom_text(stat='bin',aes(label=round((..count..)/sum(..count..)*100, 1)),vjust=-1,breaks=seq(0, 100, by = 5), size=rel(3))
+ 
+                          }else{
+                          #hist((plus.met),col="cornflowerblue",
+                          #     xlab=paste("% methylation per",object@resolution),
+                          #     main=paste("Histogram1 of %", object@context,"methylation: Forward strand"),
+                          #     labels=my.labs,...)
+                          #mtext(object@sample.id, side = 3)
+				  		    fstrand <- ggplot(data.frame(x=plus.met), aes(x)) + 
+						       geom_histogram(breaks=seq(0, 100, by = 5)) + 
+						       theme_bw() + labs(x="% methylation per base", y="Frequency") + 
+							   labs(title=paste(object@sample.id, "- positive strand")) + 
+							   theme(plot.title = element_text(lineheight=.8, face="bold"))						  
+						  }
 
                           if(labels){                          
-                            a=hist((mnus.met),plot=F,...)
-                            my.labs=as.character(round(100*a$counts/length(mnus.met),1))
+                            #a=hist((mnus.met),plot=F,...)
+                            #my.labs=as.character(round(100*a$counts/length(mnus.met),1))
+    						nstrand <- ggplot(data.frame(x=plus.met), aes(x)) + 
+    						     geom_histogram(breaks=seq(0, 100, by = 5)) + 
+    						     theme_bw() + labs(x="% methylation per base", y="Frequency") + 
+    							 labs(title=paste(object@sample.id, "- negative strand")) + 
+    							 theme(plot.title = element_text(lineheight=.8, face="bold")) +							
+  							     geom_text(stat='bin',aes(label=round((..count..)/sum(..count..)*100, 1)),vjust=-1,breaks=seq(0, 100, by = 5), size=rel(3))
+ 							
                           }
-                          else{my.labs=FALSE}
+                          else{
                           
-                          hist((mnus.met),col="cornflowerblue",
-                               xlab=paste("% methylation per",object@resolution),
-                               main=paste("Histogram of %", object@context,"methylation: Reverse strand"),
-                               labels=my.labs,...)
-                          mtext(object@sample.id, side = 3)
+                         # hist((mnus.met),col="cornflowerblue",
+                         #      xlab=paste("% methylation per",object@resolution),
+                         #      main=paste("Histogram2 of %", object@context,"methylation: Reverse strand"),
+                         #      labels=my.labs,...)
+                         # mtext(object@sample.id, side = 3)
+			  		    nstrand <- ggplot(data.frame(x=plus.met), aes(x)) + 
+					       geom_histogram(breaks=seq(0, 100, by = 5)) + 
+					       theme_bw() + labs(x="% methylation per base", y="Frequency") + 
+						   labs(title=paste(object@sample.id, "- negative strand"))  + 
+						   theme(plot.title = element_text(lineheight=.8, face="bold"))	
+						   }	
+						grid.arrange(fstrand, nstrand, ncol = 2)				  
  
                         }else{
                           if(labels){                          
                           
-                            a=hist((all.met),plot=F,...)
-                            my.labs=as.character(round(100*a$counts/length(all.met),1))
-                          }else{my.labs=FALSE}
-                          hist((all.met),col="cornflowerblue",
-                               xlab=paste("% methylation per",object@resolution),
-                               main=paste("Histogram of %", object@context,"methylation"),
-                               labels=my.labs,...)
-                          mtext(object@sample.id, side = 3)
+                          #  a=hist((all.met),plot=F,...)
+                          #  my.labs=as.character(round(100*a$counts/length(all.met),1))
+  						  ggplot(data.frame(x=all.met), aes(x)) + 
+  						     geom_histogram(breaks=seq(0, 100, by = 5)) + 
+  						     theme_bw() + labs(x="% methylation per base", y="Frequency") + 
+  							 labs(title=object@sample.id) + 
+  							 theme(plot.title = element_text(lineheight=.8, face="bold")) +							
+							geom_text(stat='bin',aes(label=round((..count..)/sum(..count..)*100, 1)),vjust=-1,breaks=seq(0, 100, by = 5), size=rel(3))
+                          }else{
+                          #hist((all.met),col="cornflowerblue",
+                          #     xlab=paste("% methylation per",object@resolution),
+                          #     main=paste("Histogram3 of %", object@context,"methylation"),
+                          #     labels=my.labs,...)
+                          #mtext(object@sample.id, side = 3)
+						  ggplot(data.frame(x=all.met), aes(x)) + 
+						     geom_histogram(breaks=seq(0, 100, by = 5)) + 
+						     theme_bw() + labs(x="% methylation per base", y="Frequency") + 
+							 labs(title=object@sample.id) + 
+							 theme(plot.title = element_text(lineheight=.8, face="bold"))
+						  }
 
                         }
                         
                         
                       }
-                        
-                      
+                                             
 })
-
-
-
 
 
 # get distribution of difference between samples in methylBase object
