@@ -1026,7 +1026,7 @@ setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
 						    geom_bar(width = 1, stat = "identity") + 
 							coord_polar(theta="y") + theme_bw() +  
 							geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]),
-							label = percent(value/100)), size=5) + 
+							label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
 							labs(y="", x='') + 	  
 						    theme(axis.ticks = element_blank(), 
 							axis.text.x = element_blank(), 
@@ -1046,7 +1046,7 @@ setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
 						    geom_bar(width = 1, stat = "identity") + 
 						    theme_bw() +  
 						    geom_text(aes(y = value + 1,
-						                  label = percent(value/100)), size=5) + 
+						                  label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
 						    labs(y="", x='', title=header) + 	  
 						    theme(axis.ticks = element_blank(), 
 						          axis.text.x = element_blank(), 
