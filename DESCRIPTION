@@ -20,8 +20,8 @@ SystemRequirements:  Perl
 biocViews: DNAMethylation
 Depends:
     R (>= 2.15.0),
-    methods
-    ggplot2
+    methods,
+    ggplot2,
     gridExtra
 Imports:
     GenomicRanges (>= 1.18.1),
