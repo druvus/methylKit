@@ -21,6 +21,8 @@ biocViews: DNAMethylation
 Depends:
     R (>= 2.15.0),
     methods
+    gglot2
+    gridExtra
 Imports:
     GenomicRanges (>= 1.18.1),
     IRanges,
