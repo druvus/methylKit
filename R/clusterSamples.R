@@ -150,14 +150,14 @@ colSds <- function(x, ...) {
 # Principal Components Analysis on methylBase object
 # x matrix each column is a sample
 # cor a logical value indicating whether the calculation should use the correlation matrix or the covariance matrix. (The correlation matrix can only be used if there are no constant variables.)
-.pcaPlot = function(x,comp1=1,comp2=2, screeplot=FALSE, adj.lim=c(0.001,0.1), treatment=treatment,sample.ids=sample.ids,context,scale=TRUE,center=TRUE,obj.return=FALSE){
+.pcaPlot = function(x,comp1=1,comp2=2, screeplot=FALSE, adj.lim=c(0.001,0.1), treatment=treatment,sample.ids=sample.ids,context,scale=TRUE,center=TRUE,obj.return=FALSE, col=col){
   #x.pr = princomp(x, cor=cor)
   
 
   x.pr = prcomp((x),scale.=scale,center=center)
 
   if (screeplot){
-    i=5;screeplot(x.pr, type="barplot", main=paste(context,"methylation PCA Screeplot"), col = rainbow(i)[i])
+    i=5;screeplot(x.pr, type="barplot", main=paste(context,"methylation PCA Screeplot"), col = col)
   }
   else{
     #loads = loadings(x.pr)
@@ -165,17 +165,26 @@ colSds <- function(x, ...) {
     treatment=treatment
     sample.ids=sample.ids
     my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
-
+    df <- data.frame(pc1=loads[,comp1], pc2=loads[,comp2], id=rownames(loads))
+    expvar <- (x.pr$sdev)^2 / sum(x.pr$sdev^2) 
     
-    plot(loads[,comp1],loads[,comp2], main = paste(context,"methylation PCA Analysis"),
-         col=my.cols[treatment+1],
-         xlim=.adjlim(loads[,comp1],adj.lim[1]), 
-         ylim=.adjlim(loads[,comp2], adj.lim[2]),
-         xlab=paste("loadings for PC",comp1,sep=""), 
-         ylab=paste("loadings for PC",comp2,sep=""))
+#     plot(loads[,comp1],loads[,comp2], main = paste(context,"methylation PCA Analysis"),
+#          col=my.cols[treatment+1],
+#          xlim=.adjlim(loads[,comp1],adj.lim[1]), 
+#          ylim=.adjlim(loads[,comp2], adj.lim[2]),
+#          xlab=paste("loadings for PC",comp1,sep=""), 
+#          ylab=paste("loadings for PC",comp2,sep=""))
+#     
+#     text(loads[,comp1], loads[,comp2],labels=sample.ids,adj=c(-0.4,0.3), 
+#          col=my.cols[treatment+1])
+    ggplot(df, aes(pc1, pc2, label = id)) + 
+      geom_point(aes(pc1,pc2, label = id), size = 2) + 
+      labs(list(x =paste("loadings for PC",comp1," (", round(expvar[comp1]*100,1), "%)", sep=""), y = paste("loadings for PC",comp2," (", round(expvar[comp2]*100,1), "%)", sep=""))) + 
+      scale_x_continuous() +
+      ggtitle(paste(context,"methylation PCA Analysis")) +
+      theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
+      theme_bw()
     
-    text(loads[,comp1], loads[,comp2],labels=sample.ids,adj=c(-0.4,0.3), 
-         col=my.cols[treatment+1])
   }
   if(obj.return){  return((x.pr))}
 
@@ -186,14 +195,14 @@ colSds <- function(x, ...) {
 # x matrix each column is a sample
 .pcaPlotT = function(x,comp1=1,comp2=2,screeplot=FALSE, adj.lim=c(0.001,0.1),
                      treatment=treatment,sample.ids=sample.ids,context,
-                     scale=TRUE,center=TRUE,obj.return=FALSE){
+                     scale=TRUE,center=TRUE,obj.return=FALSE, col=col){
 
   x.pr = prcomp(t(x),scale.=scale,center=center)
  
   if (screeplot){
     i=5;screeplot(x.pr, type="barplot", 
                   main=paste(context,"methylation PCA Screeplot"), 
-                  col = rainbow(i)[i])
+                  col = col)
   }
   else{
     #loads = loadings(x.pr)
@@ -203,12 +212,24 @@ colSds <- function(x, ...) {
     my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
     pc1=x.pr$x[,comp1]
     pc2=x.pr$x[,comp2]
+    df <- data.frame(pc1=x.pr$x[,comp1], pc2=x.pr$x[,comp2], id=rownames(x.pr$x))
+    expvar <- (x.pr$sdev)^2 / sum(x.pr$sdev^2) 
     
-    plot(pc1,pc2, main = paste(context,"methylation PCA Analysis"),
-         col=my.cols[treatment+1],
-         xlim=.adjlim(pc1,adj.lim[1]), ylim=.adjlim(pc2, adj.lim[2]),
-         xlab=paste("PC",comp1,sep=""), ylab=paste("PC",comp2,sep=""))
-    text(pc1, pc2,labels=sample.ids,adj=c(-0.4,0.3), col=my.cols[treatment+1])
+#     plot(pc1,pc2, main = paste(context,"methylation PCA Analysis"),
+#          col=my.cols[treatment+1],
+#          xlim=.adjlim(pc1,adj.lim[1]), ylim=.adjlim(pc2, adj.lim[2]),
+#          xlab=paste("PC",comp1,sep=""), ylab=paste("PC",comp2,sep=""))
+#     text(pc1, pc2,labels=sample.ids,adj=c(-0.4,0.3), col=my.cols[treatment+1])
+
+    ggplot(df, aes(pc1, pc2, label = id, color = treatment)) + 
+      geom_text(aes(pc1,pc2, label = id), size = 4) + 
+      labs(list(x =paste("PC",comp1," (", round(expvar[comp1]*100,1), "%)", sep=""), y = paste("PC",comp2," (", round(expvar[comp2]*100,1), "%)", sep=""))) + 
+      scale_x_continuous() +
+      ggtitle(paste(context,"methylation PCA Analysis")) +
+      theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
+      theme_bw()
+      
+    
   }
   if(obj.return){  return((x.pr))}
 }
@@ -364,7 +385,7 @@ setMethod("clusterSamples", "methylBase",
 setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1),
                                   scale=TRUE,center=TRUE,comp=c(1,2),transpose=TRUE,
                                   sd.filter=TRUE,sd.threshold=0.5,
-                                  filterByQuantile=TRUE,obj.return=FALSE) 
+                                  filterByQuantile=TRUE,obj.return=FALSE, col) 
           standardGeneric("PCASamples"))
 
 #' @rdname PCASamples-methods
@@ -372,7 +393,7 @@ setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1
 setMethod("PCASamples", "methylBase",
   function(.Object, screeplot, adj.lim,scale,center,comp,
                              transpose,sd.filter, sd.threshold, 
-                             filterByQuantile,obj.return)
+                             filterByQuantile,obj.return, col="#FF0030FF")
   {
     
     mat      = getData(.Object)
@@ -396,16 +417,16 @@ setMethod("PCASamples", "methylBase",
     if(transpose){
       .pcaPlotT(meth.mat,comp1=comp[1],comp2=comp[2],screeplot=screeplot, 
                 adj.lim=adj.lim, 
-                treatment=.Object@treatment,sample.ids=.Object@sample.ids,
+                treatment=factor(.Object@treatment),sample.ids=.Object@sample.ids,
                 context=.Object@context
-                ,scale=scale,center=center,obj.return=obj.return)
+                ,scale=scale,center=center,obj.return=obj.return, col=col)
       
     }else{
       .pcaPlot(meth.mat,comp1=comp[1],comp2=comp[2],screeplot=screeplot, 
                adj.lim=adj.lim, 
-               treatment=.Object@treatment,sample.ids=.Object@sample.ids,
+               treatment=factor(.Object@treatment),sample.ids=.Object@sample.ids,
                context=.Object@context,
-               scale=scale,center=center,  obj.return=obj.return)
+               scale=scale,center=center,  obj.return=obj.return, col=col)
     }
     
   }      
