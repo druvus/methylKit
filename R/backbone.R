@@ -831,41 +831,84 @@ setMethod("getCoverageStats", "methylRaw",
                           plus.cov=object[object$strand=="+",]$coverage
                           mnus.cov=object[object$strand=="-",]$coverage
                           
-                          par(mfrow=c(1,2))
+#                          par(mfrow=c(1,2))
                           if(labels){
-                            a=hist(log10(plus.cov),plot=F)
-                            my.labs=as.character(round(100*a$counts/length(plus.cov),1))
-                          }else{my.labs=F}
+#                            a=hist(log10(plus.cov),plot=F)
+#                            my.labs=as.character(round(100*a$counts/length(plus.cov),1))
+                            fstrand <- ggplot(data.frame(x=log10(plus.cov)), aes(x)) + 
+                              geom_histogram(breaks=seq(1, 5, by = 0.2)) + 
+                              theme_bw() + 
+                              labs(x=paste("log10 of read coverage per",object@resolution), y="Frequency") + 
+                              labs(title=paste(object@sample.id, "- forward strand")) + 
+                              theme(plot.title = element_text(lineheight=.8, face="bold")) + 
+                              geom_text(stat='bin',aes(label=round((..count..)/sum(..count..)*100, 1)),vjust=-1,breaks=seq(1, 5, by = 0.2), size=rel(3))                         
+                            
+                          }else{
  
-                          hist(log10(plus.cov),col="chartreuse4",
-                               xlab=paste("log10 of read coverage per",object@resolution),
-                               main=paste("Histogram of", object@context, "coverage: Forward strand"),
-                               labels=my.labs,...)
-                          mtext(object@sample.id, side = 3)
-
+#                           hist(log10(plus.cov),col="chartreuse4",
+#                                xlab=paste("log10 of read coverage per",object@resolution),
+#                                main=paste("Histogram of", object@context, "coverage: Forward strand"),
+#                                labels=my.labs,...)
+#                           mtext(object@sample.id, side = 3)
+                            fstrand <- ggplot(data.frame(x=log10(plus.cov)), aes(x)) + 
+                            geom_histogram(breaks=seq(1, 5, by = 0.2)) + 
+                            theme_bw() + 
+                            labs(x=paste("log10 of read coverage per",object@resolution), y="Frequency") + 
+                            labs(title=paste(object@sample.id, "- forward strand")) + 
+                            theme(plot.title = element_text(lineheight=.8, face="bold"))  
+                          }
+                          
                          if(labels){
-                            a=hist(log10(mnus.cov),plot=F)
-                            my.labs=as.character(round(100*a$counts/length(mnus.cov),1))
-                          }else{my.labs=F}
-                          a=hist(log10(mnus.cov),plot=F)
-                          hist(log10(mnus.cov),col="chartreuse4",
-                               xlab=paste("log10 of read coverage per",object@resolution),
-                               main=paste("Histogram of", object@context, "coverage: Reverse strand"),
-                               labels=my.labs,...)
-                          mtext(object@sample.id, side = 3)
- 
+#                            a=hist(log10(mnus.cov),plot=F)
+#                            my.labs=as.character(round(100*a$counts/length(mnus.cov),1))
+                           nstrand <- ggplot(data.frame(x=log10(plus.cov)), aes(x)) + 
+                             geom_histogram(breaks=seq(1, 5, by = 0.2)) + 
+                             theme_bw() + 
+                             labs(x=paste("log10 of read coverage per",object@resolution), y="Frequency") + 
+                             labs(title=paste(object@sample.id, "- reverse strand")) + 
+                             theme(plot.title = element_text(lineheight=.8, face="bold")) + 
+                             geom_text(stat='bin',aes(label=round((..count..)/sum(..count..)*100, 1)),vjust=-1,breaks=seq(1, 5, by = 0.2), size=rel(3))                         
+                           
+                          }else{
+#                          a=hist(log10(mnus.cov),plot=F)
+#                          hist(log10(mnus.cov),col="chartreuse4",
+#                               xlab=paste("log10 of read coverage per",object@resolution),
+#                               main=paste("Histogram of", object@context, "coverage: Reverse strand"),
+#                               labels=my.labs,...)
+#                          mtext(object@sample.id, side = 3)
+                            nstrand <- ggplot(data.frame(x=log10(mnus.cov)), aes(x)) + 
+                            geom_histogram(breaks=seq(1, 5, by = 0.2)) + 
+                            theme_bw() + 
+                            labs(x=paste("log10 of read coverage per",object@resolution), y="Frequency") + 
+                            labs(title=paste(object@sample.id, "- reverse strand")) + 
+                            theme(plot.title = element_text(lineheight=.8, face="bold")) 
+                            
+                          }
+                          grid.arrange(fstrand, nstrand, ncol = 2)	                            
                         }else{
                           all.cov= object$coverage
                          if(labels){
-                           a=hist(log10(all.cov),plot=F)
-                           my.labs=as.character(round(100*a$counts/length(all.cov),1))
-                          }else{my.labs=F}                          
-
-                          hist(log10(all.cov),col="chartreuse4",
-                               xlab=paste("log10 of read coverage per",object@resolution),
-                               main=paste("Histogram of", object@context, "coverage"),
-                               labels=my.labs,...)
-                          mtext(object@sample.id, side = 3)
+#                           a=hist(log10(all.cov),plot=F)
+#                           my.labs=as.character(round(100*a$counts/length(all.cov),1))
+                           ggplot(data.frame(x=log10(all.cov)), aes(x)) + 
+                             geom_histogram(breaks=seq(1, 5, by = 0.2)) + 
+                             theme_bw() + labs(x=paste("log10 of read coverage per",object@resolution), y="Frequency") + 
+                             labs(title=object@sample.id) + 
+                             theme(plot.title = element_text(lineheight=.8, face="bold")) + 
+                             geom_text(stat='bin',aes(label=round((..count..)/sum(..count..)*100, 1)),vjust=-1,breaks=seq(1, 5, by = 0.2), size=rel(3))                         
+                          }else{                          
+# 
+#                           hist(log10(all.cov),col="chartreuse4",
+#                                xlab=paste("log10 of read coverage per",object@resolution),
+#                                main=paste("Histogram of", object@context, "coverage"),
+#                                labels=my.labs,...)
+#                           mtext(object@sample.id, side = 3)
+                            ggplot(data.frame(x=log10(all.cov)), aes(x)) + 
+                              geom_histogram(breaks=seq(1, 5, by = 0.2)) + 
+                              theme_bw() + labs(x=paste("log10 of read coverage per",object@resolution), y="Frequency") + 
+                              labs(title=object@sample.id) + 
+                              theme(plot.title = element_text(lineheight=.8, face="bold"))
+                          }
 
                         }
                         
