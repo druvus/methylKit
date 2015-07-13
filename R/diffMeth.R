@@ -944,12 +944,12 @@ setMethod(f="get.methylDiff", signature="methylDiff",
 #' @export
 #' @docType methods
 #' @rdname diffMethPerChr-methods
-setGeneric("diffMethPerChr", def=function(x,plot=T,qvalue.cutoff=0.01, meth.cutoff=25,exclude=NULL,...) standardGeneric("diffMethPerChr"))
+setGeneric("diffMethPerChr", def=function(x,plot=T,qvalue.cutoff=0.01, meth.cutoff=25,exclude=NULL, main="",...) standardGeneric("diffMethPerChr"))
 
 #' @aliases diffMethPerChr,methylDiff-method
 #' @rdname  diffMethPerChr-methods
 setMethod("diffMethPerChr", signature(x = "methylDiff"),
-                    function(x,plot,qvalue.cutoff, meth.cutoff,exclude,...){
+                    function(x,plot,qvalue.cutoff, meth.cutoff,exclude, main="% of hyper & hypo methylated regions per chromsome",...){
                       x=getData(x)
                       temp.hyper=x[x$qvalue < qvalue.cutoff & x$meth.diff >= meth.cutoff,]
                       temp.hypo =x[x$qvalue < qvalue.cutoff & x$meth.diff <= -meth.cutoff,]
@@ -977,11 +977,22 @@ setMethod("diffMethPerChr", signature(x = "methylDiff"),
                         
                         if(!is.null(exclude)){dmc.hypo.hyper=dmc.hypo.hyper[! dmc.hypo.hyper$chr %in% exclude,]}
                         
-                        barplot(
-                          t(as.matrix(data.frame(hyper=dmc.hypo.hyper[,5],hypo=dmc.hypo.hyper[,3],row.names=dmc.hypo.hyper[,1]) ))
-                          ,las=2,horiz=T,col=c("magenta","aquamarine4"),main=paste("% of hyper & hypo methylated regions per chromsome",sep=""),xlab="% (percentage)",...)
-                        mtext(side=3,paste("qvalue<",qvalue.cutoff," & methylation diff. >=",meth.cutoff," %",sep="") )
-                        legend("topright",legend=c("hyper","hypo"),fill=c("magenta","aquamarine4"))
+#                         barplot(
+#                           t(as.matrix(data.frame(hyper=dmc.hypo.hyper[,5],hypo=dmc.hypo.hyper[,3],row.names=dmc.hypo.hyper[,1]) ))
+#                           ,las=2,horiz=T,col=c("magenta","aquamarine4"),main=paste("% of hyper & hypo methylated regions per chromsome",sep=""),xlab="% (percentage)",...)
+#                         mtext(side=3,paste("qvalue<",qvalue.cutoff," & methylation diff. >=",meth.cutoff," %",sep="") )
+#                         legend("topright",legend=c("hyper","hypo"),fill=c("magenta","aquamarine4"))
+                        
+                        demo.df <- melt(data.frame(hyper=dmc.hypo.hyper[,5],hypo=dmc.hypo.hyper[,3],chr=factor(dmc.hypo.hyper[,1], dmc.hypo.hyper[,1])), id.vars="chr")
+                        ggplot(demo.df, aes(x=chr, y=value, fill=variable)) +
+                          geom_bar(stat = "identity") + 
+                          theme_bw() +  
+                          labs(y='% (percentage)', x="", title=main) + 
+                          coord_flip() +							  
+                          scale_fill_brewer(palette=col) + 
+                          theme(plot.title = element_text(lineheight=.8, face="bold"))                         
+                        
+                        
                       }else{
                         
                         list(diffMeth.per.chr=dmc.hypo.hyper,diffMeth.all=all.hyper.hypo)
