@@ -177,7 +177,7 @@ colSds <- function(x, ...) {
 #     
 #     text(loads[,comp1], loads[,comp2],labels=sample.ids,adj=c(-0.4,0.3), 
 #          col=my.cols[treatment+1])
-    ggplot(df, aes(pc1, pc2, label = id)) + 
+    p <-ggplot(df, aes(pc1, pc2, label = id)) + 
       geom_point(aes(pc1,pc2, label = id), size = 2) + 
       labs(list(x =paste("loadings for PC",comp1," (", round(expvar[comp1]*100,1), "%)", sep=""), y = paste("loadings for PC",comp2," (", round(expvar[comp2]*100,1), "%)", sep=""))) + 
       scale_x_continuous() +
@@ -186,7 +186,9 @@ colSds <- function(x, ...) {
       theme_bw()
     
   }
-  if(obj.return){  return((x.pr))}
+  if(obj.return){  return((x.pr))} else if (!screeplot) {
+    return (p)
+  }
 
 }
 
@@ -221,7 +223,7 @@ colSds <- function(x, ...) {
 #          xlab=paste("PC",comp1,sep=""), ylab=paste("PC",comp2,sep=""))
 #     text(pc1, pc2,labels=sample.ids,adj=c(-0.4,0.3), col=my.cols[treatment+1])
 
-    ggplot(df, aes(pc1, pc2, label = id, color = treatment)) + 
+    p <- ggplot(df, aes(pc1, pc2, label = id, color = treatment)) + 
       geom_text(aes(pc1,pc2, label = id), size = 4) + 
       labs(list(x =paste("PC",comp1," (", round(expvar[comp1]*100,1), "%)", sep=""), y = paste("PC",comp2," (", round(expvar[comp2]*100,1), "%)", sep=""))) + 
       scale_x_continuous() +
@@ -231,7 +233,9 @@ colSds <- function(x, ...) {
       
     
   }
-  if(obj.return){  return((x.pr))}
+  if(obj.return){  return((x.pr))} else if (!screeplot) {
+    return (p)
+  }
 }
 
 
