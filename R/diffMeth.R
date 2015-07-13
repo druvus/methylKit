@@ -949,7 +949,7 @@ setGeneric("diffMethPerChr", def=function(x,plot=T,qvalue.cutoff=0.01, meth.cuto
 #' @aliases diffMethPerChr,methylDiff-method
 #' @rdname  diffMethPerChr-methods
 setMethod("diffMethPerChr", signature(x = "methylDiff"),
-                    function(x,plot,qvalue.cutoff, meth.cutoff,exclude, main="% of hyper & hypo methylated regions per chromsome",...){
+                    function(x,plot,qvalue.cutoff, meth.cutoff,exclude, main="% of hyper & hypo methylated regions per chromsome",col="Set1",...){
                       x=getData(x)
                       temp.hyper=x[x$qvalue < qvalue.cutoff & x$meth.diff >= meth.cutoff,]
                       temp.hypo =x[x$qvalue < qvalue.cutoff & x$meth.diff <= -meth.cutoff,]
