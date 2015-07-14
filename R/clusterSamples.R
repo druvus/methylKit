@@ -165,7 +165,7 @@ colSds <- function(x, ...) {
     treatment=treatment
     sample.ids=sample.ids
     my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
-    df <- data.frame(pc1=loads[,comp1], pc2=loads[,comp2], id=rownames(loads))
+    df <- data.frame(pc1=loads[,comp1], pc2=loads[,comp2], id=rownames(loads),treatment=treatment)
     expvar <- (x.pr$sdev)^2 / sum(x.pr$sdev^2) 
     
 #     plot(loads[,comp1],loads[,comp2], main = paste(context,"methylation PCA Analysis"),
@@ -211,10 +211,10 @@ colSds <- function(x, ...) {
     #loads = x.pr$rotation
     treatment=treatment
     sample.ids=sample.ids
-    my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
+    #my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
     pc1=x.pr$x[,comp1]
     pc2=x.pr$x[,comp2]
-    df <- data.frame(pc1=x.pr$x[,comp1], pc2=x.pr$x[,comp2], id=rownames(x.pr$x))
+    df <- data.frame(pc1=x.pr$x[,comp1], pc2=x.pr$x[,comp2], id=rownames(x.pr$x), treatment=treatment)
     expvar <- (x.pr$sdev)^2 / sum(x.pr$sdev^2) 
     
 #     plot(pc1,pc2, main = paste(context,"methylation PCA Analysis"),
@@ -389,7 +389,7 @@ setMethod("clusterSamples", "methylBase",
 setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1),
                                   scale=TRUE,center=TRUE,comp=c(1,2),transpose=TRUE,
                                   sd.filter=TRUE,sd.threshold=0.5,
-                                  filterByQuantile=TRUE,obj.return=FALSE, col) 
+                                  filterByQuantile=TRUE,obj.return=FALSE, col="black") 
           standardGeneric("PCASamples"))
 
 #' @rdname PCASamples-methods
@@ -397,7 +397,7 @@ setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1
 setMethod("PCASamples", "methylBase",
   function(.Object, screeplot, adj.lim,scale,center,comp,
                              transpose,sd.filter, sd.threshold, 
-                             filterByQuantile,obj.return, col="#FF0030FF")
+                             filterByQuantile,obj.return, col="black")
   {
     
     mat      = getData(.Object)
@@ -421,14 +421,14 @@ setMethod("PCASamples", "methylBase",
     if(transpose){
       .pcaPlotT(meth.mat,comp1=comp[1],comp2=comp[2],screeplot=screeplot, 
                 adj.lim=adj.lim, 
-                treatment=factor(.Object@treatment),sample.ids=.Object@sample.ids,
+                treatment=.Object@treatment,sample.ids=.Object@sample.ids,
                 context=.Object@context
                 ,scale=scale,center=center,obj.return=obj.return, col=col)
       
     }else{
       .pcaPlot(meth.mat,comp1=comp[1],comp2=comp[2],screeplot=screeplot, 
                adj.lim=adj.lim, 
-               treatment=factor(.Object@treatment),sample.ids=.Object@sample.ids,
+               treatment=.Object@treatment,sample.ids=.Object@sample.ids,
                context=.Object@context,
                scale=scale,center=center,  obj.return=obj.return, col=col)
     }
