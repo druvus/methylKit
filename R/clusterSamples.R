@@ -150,14 +150,14 @@ colSds <- function(x, ...) {
 # Principal Components Analysis on methylBase object
 # x matrix each column is a sample
 # cor a logical value indicating whether the calculation should use the correlation matrix or the covariance matrix. (The correlation matrix can only be used if there are no constant variables.)
-.pcaPlot = function(x,comp1=1,comp2=2, screeplot=FALSE, adj.lim=c(0.001,0.1), treatment=treatment,sample.ids=sample.ids,context,scale=TRUE,center=TRUE,obj.return=FALSE, col=col){
+.pcaPlot = function(x,comp1=1,comp2=2, screeplot=FALSE, adj.lim=c(0.001,0.1), treatment=treatment,sample.ids=sample.ids,context,scale=TRUE,center=TRUE,obj.return=FALSE, col=col, main=paste(context,"methylation PCA Screeplot")){
   #x.pr = princomp(x, cor=cor)
   
 
   x.pr = prcomp((x),scale.=scale,center=center)
 
   if (screeplot){
-    i=5;screeplot(x.pr, type="barplot", main=paste(context,"methylation PCA Screeplot"), col = col)
+    i=5;screeplot(x.pr, type="barplot", main=main, col = col)
   }
   else{
     #loads = loadings(x.pr)
@@ -181,7 +181,7 @@ colSds <- function(x, ...) {
       geom_point(aes(pc1,pc2, label = id), size = 2) + 
       labs(list(x =paste("loadings for PC",comp1," (", round(expvar[comp1]*100,1), "%)", sep=""), y = paste("loadings for PC",comp2," (", round(expvar[comp2]*100,1), "%)", sep=""))) + 
       scale_x_continuous() +
-      ggtitle(paste(context,"methylation PCA Analysis")) +
+      ggtitle(main) +
       theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
       theme_bw()
     
@@ -197,13 +197,13 @@ colSds <- function(x, ...) {
 # x matrix each column is a sample
 .pcaPlotT = function(x,comp1=1,comp2=2,screeplot=FALSE, adj.lim=c(0.001,0.1),
                      treatment=treatment,sample.ids=sample.ids,context,
-                     scale=TRUE,center=TRUE,obj.return=FALSE, col=col){
+                     scale=TRUE,center=TRUE,obj.return=FALSE, col=col, main=paste(context,"methylation PCA Screeplot")){
 
   x.pr = prcomp(t(x),scale.=scale,center=center)
  
   if (screeplot){
     i=5;screeplot(x.pr, type="barplot", 
-                  main=paste(context,"methylation PCA Screeplot"), 
+                  main=main, 
                   col = col)
   }
   else{
@@ -227,7 +227,7 @@ colSds <- function(x, ...) {
       geom_text(aes(pc1,pc2, label = id), size = 4) + 
       labs(list(x =paste("PC",comp1," (", round(expvar[comp1]*100,1), "%)", sep=""), y = paste("PC",comp2," (", round(expvar[comp2]*100,1), "%)", sep=""))) + 
       scale_x_continuous() +
-      ggtitle(paste(context,"methylation PCA Analysis")) +
+      ggtitle(main) +
       theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
       theme_bw()
       
@@ -397,7 +397,7 @@ setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1
 setMethod("PCASamples", "methylBase",
   function(.Object, screeplot, adj.lim,scale,center,comp,
                              transpose,sd.filter, sd.threshold, 
-                             filterByQuantile,obj.return, col="black")
+                             filterByQuantile,obj.return, col="black", main)
   {
     
     mat      = getData(.Object)
@@ -423,14 +423,14 @@ setMethod("PCASamples", "methylBase",
                 adj.lim=adj.lim, 
                 treatment=.Object@treatment,sample.ids=.Object@sample.ids,
                 context=.Object@context
-                ,scale=scale,center=center,obj.return=obj.return, col=col)
+                ,scale=scale,center=center,obj.return=obj.return, col=col, main=main)
       
     }else{
       .pcaPlot(meth.mat,comp1=comp[1],comp2=comp[2],screeplot=screeplot, 
                adj.lim=adj.lim, 
                treatment=.Object@treatment,sample.ids=.Object@sample.ids,
                context=.Object@context,
-               scale=scale,center=center,  obj.return=obj.return, col=col)
+               scale=scale,center=center,  obj.return=obj.return, col=col, main=main)
     }
     
   }      
