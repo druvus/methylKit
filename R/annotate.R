@@ -1010,10 +1010,11 @@ setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col="Set1",hea
 #' @docType methods
 #' @aliases plotTargetAnnotation,annotationByFeature-method
 setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
-                    function(x,precedence,col,header, set="Set1", ...){
+                    function(x,precedence,col="Set1",header, ...){
                       props=getTargetAnnotationStats(x,percentage=TRUE,precedence=precedence)
                       props.df <- data.frame(group=names(props), percent=paste( paste(round(props),"%"),sep=" "), value =props)
                       header <- header
+                      
                       if(precedence | ( is(x,"annotationByFeature") & !is(x,"annotationByGenicParts")) ){
                         slice.names=names(props)
                         #names(props)=paste(names(props),paste(round(props),"%"),sep=" ")
@@ -1022,38 +1023,37 @@ setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
 
                         #pie(props,cex=0.9,col=col,...)
                         # legend("topright",legend=slice.names,fill=col )
-						ggplot(props.df, aes(x=1, y=value, fill=group)) +
-						    geom_bar(width = 1, stat = "identity") + 
-							coord_polar(theta="y") + theme_bw() +  
-							geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]),
-							label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
-							labs(y="", x='') + 	  
-						    theme(axis.ticks = element_blank(), 
-							axis.text.x = element_blank(), 
-							axis.text.y = element_blank(), 
-							panel.border = element_blank()) + 
-							scale_fill_brewer(palette=col) + 
-							ggtitle(header) + 
-						    theme(plot.title = element_text(lineheight=.8, face="bold"))
-							
+          						ggplot(props.df, aes(x=1, y=value, fill=group)) +
+          						  geom_bar(width = 1, stat = "identity") + 
+          							coord_polar(theta="y") + theme_bw() +  
+          							geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]),
+          							label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
+          							labs(y="", x='') + 	  
+          						  theme(axis.ticks = element_blank(), 
+            							axis.text.x = element_blank(), 
+            							axis.text.y = element_blank(), 
+            							panel.border = element_blank()) + 
+          							scale_fill_brewer(palette=col) + 
+          							ggtitle(header) + 
+          						    theme(plot.title = element_text(lineheight=.8, face="bold"))
+          							
 
                       }
                       else{
                         
                         #mids=barplot(props,col=col,...)  
                         #text(mids,y=props,labels=paste(paste(round(props),"%",sep="")),pos=1) 
-						ggplot(props.df, aes(x=group, y=value, fill=group)) +
-						    geom_bar(width = 1, stat = "identity") + 
-						    theme_bw() +  
-						    geom_text(aes(y = value + 1,
-						                  label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
-						    labs(y="", x='', title=header) + 	  
-						    theme(axis.ticks = element_blank(), 
-						          axis.text.x = element_blank(), 
-						          axis.text.y = element_blank(), 
-						          panel.border = element_blank()) + 
-						    scale_fill_brewer(palette=col) + 
-						    theme(plot.title = element_text(lineheight=.8, face="bold"))                      }
+            						ggplot(props.df, aes(x=group, y=value, fill=group)) +
+            						    geom_bar(width = 1, stat = "identity") + 
+            						    theme_bw() +  
+            						    geom_text(aes(y = value + 1,label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
+            						    labs(y="", x='', title=header) + 	  
+            						    theme(axis.ticks = element_blank(), 
+            						          axis.text.x = element_blank(), 
+            						          axis.text.y = element_blank(), 
+            						          panel.border = element_blank()) + 
+            						    scale_fill_brewer(palette=col) + 
+            						    theme(plot.title = element_text(lineheight=.8, face="bold"))                      }
 
 })
 
