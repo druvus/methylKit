@@ -203,7 +203,7 @@ colSds <- function(x, ...) {
  
   if (screeplot){
     i=5;screeplot(x.pr, type="barplot", 
-                  main=main, 
+                  main=, 
                   col = col)
   }
   else{
@@ -397,7 +397,7 @@ setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1
 setMethod("PCASamples", "methylBase",
   function(.Object, screeplot, adj.lim,scale,center,comp,
                              transpose,sd.filter, sd.threshold, 
-                             filterByQuantile,obj.return, col="black", main)
+                             filterByQuantile,obj.return, col="black", main="")
   {
     
     mat      = getData(.Object)
