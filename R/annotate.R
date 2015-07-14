@@ -1004,16 +1004,16 @@ setMethod("getAssociationWithTSS", signature(x = "annotationByGenicParts"),
 #' @export
 #' @docType methods
 #' @rdname plotTargetAnnotation-methods
-setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col="Set1",header="", ...) standardGeneric("plotTargetAnnotation"))
+setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col="Set1",main="", ...) standardGeneric("plotTargetAnnotation"))
 
 #' @rdname plotTargetAnnotation-methods
 #' @docType methods
 #' @aliases plotTargetAnnotation,annotationByFeature-method
 setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
-                    function(x,precedence,col="Set1",header, ...){
+                    function(x,precedence,col="Set1",main, ...){
                       props=getTargetAnnotationStats(x,percentage=TRUE,precedence=precedence)
-                      props.df <- data.frame(group=names(props), percent=paste( paste(round(props),"%"),sep=" "), value =props)
-                      header <- header
+                      props.df <- data.frame(group=names(props), percent=paste( paste(round(props,1),"%"),sep=" "), value =props)
+                      header <- main
                       
                       if(precedence | ( is(x,"annotationByFeature") & !is(x,"annotationByGenicParts")) ){
                         slice.names=names(props)
@@ -1027,7 +1027,7 @@ setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
           						  geom_bar(width = 1, stat = "identity") + 
           							coord_polar(theta="y") + theme_bw() +  
           							geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]),
-          							label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
+          							label = percent), size=5) + 
           							labs(y="", x='') + 	  
           						  theme(axis.ticks = element_blank(), 
             							axis.text.x = element_blank(), 
@@ -1046,7 +1046,7 @@ setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
             						ggplot(props.df, aes(x=group, y=value, fill=group)) +
             						    geom_bar(width = 1, stat = "identity") + 
             						    theme_bw() +  
-            						    geom_text(aes(y = value + 1,label = paste(as.character(round(value,1)),"%",sep="" )), size=5) + 
+            						    geom_text(aes(y = value + 1,label = percent), size=5) + 
             						    labs(y="", x='', title=header) + 	  
             						    theme(axis.ticks = element_blank(), 
             						          axis.text.x = element_blank(), 
