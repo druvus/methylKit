@@ -162,7 +162,7 @@ colSds <- function(x, ...) {
   else{
     #loads = loadings(x.pr)
     loads = x.pr$rotation
-    treatment=treatment
+    treatment=factor(treatment)
     sample.ids=sample.ids
     my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
     df <- data.frame(pc1=loads[,comp1], pc2=loads[,comp2], id=rownames(loads),treatment=treatment)
@@ -209,7 +209,7 @@ colSds <- function(x, ...) {
   else{
     #loads = loadings(x.pr)
     #loads = x.pr$rotation
-    treatment=treatment
+    treatment=factor(treatment)
     sample.ids=sample.ids
     #my.cols=rainbow(length(unique(treatment)), start=1, end=0.6)
     pc1=x.pr$x[,comp1]
