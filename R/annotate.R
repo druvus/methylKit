@@ -1012,13 +1012,13 @@ setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col=rainbow(le
 setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
                     function(x,precedence,col,header,...){
                       props=getTargetAnnotationStats(x,percentage=TRUE,precedence=precedence)
-
+                      props.df <- data.frame(group=names(props), percent=paste( paste(round(props),"%"),sep=" "), value =props)
+                      header <- header
                       if(precedence | ( is(x,"annotationByFeature") & !is(x,"annotationByGenicParts")) ){
                         slice.names=names(props)
                         #names(props)=paste(names(props),paste(round(props),"%"),sep=" ")
                         #names(props)=paste( paste(round(props),"%"),sep=" ")
-						props.df <- data.frame(group=names(props), percent=paste( paste(round(props),"%"),sep=" "), value =props)
-						header <- header
+
 
                         #pie(props,cex=0.9,col=col,...)
                         # legend("topright",legend=slice.names,fill=col )
