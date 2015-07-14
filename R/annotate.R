@@ -1004,13 +1004,13 @@ setMethod("getAssociationWithTSS", signature(x = "annotationByGenicParts"),
 #' @export
 #' @docType methods
 #' @rdname plotTargetAnnotation-methods
-setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col=rainbow(length(x@annotation)),header="", ...) standardGeneric("plotTargetAnnotation"))
+setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col="Set1",header="", ...) standardGeneric("plotTargetAnnotation"))
 
 #' @rdname plotTargetAnnotation-methods
 #' @docType methods
 #' @aliases plotTargetAnnotation,annotationByFeature-method
 setMethod("plotTargetAnnotation", signature(x = "annotationByFeature"),
-                    function(x,precedence,col,header,...){
+                    function(x,precedence,col,header, set="Set1", ...){
                       props=getTargetAnnotationStats(x,percentage=TRUE,precedence=precedence)
                       props.df <- data.frame(group=names(props), percent=paste( paste(round(props),"%"),sep=" "), value =props)
                       header <- header
