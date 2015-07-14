@@ -389,7 +389,7 @@ setMethod("clusterSamples", "methylBase",
 setGeneric("PCASamples", function(.Object, screeplot=FALSE, adj.lim=c(0.0004,0.1),
                                   scale=TRUE,center=TRUE,comp=c(1,2),transpose=TRUE,
                                   sd.filter=TRUE,sd.threshold=0.5,
-                                  filterByQuantile=TRUE,obj.return=FALSE, col="black") 
+                                  filterByQuantile=TRUE,obj.return=FALSE, col="black", main) 
           standardGeneric("PCASamples"))
 
 #' @rdname PCASamples-methods
